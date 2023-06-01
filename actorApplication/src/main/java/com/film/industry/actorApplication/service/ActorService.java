@@ -2,6 +2,7 @@ package com.film.industry.actorApplication.service;
 
 
 import com.film.industry.actorApplication.dto.ActorDto;
+import com.film.industry.actorApplication.exception.ActorIdNotValid;
 import com.film.industry.actorApplication.model.Actor;
 import com.film.industry.actorApplication.repository.ActorRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +28,24 @@ public class ActorService {
     }
 
     public List<ActorDto> findActor(Integer actorId) {
-        List<ActorDto> findActorById = new ArrayList<>();
-        actorRepository.findById(actorId).ifPresentOrElse(a -> {
-            findActorById.add(getActorById(a));
-        }, () -> {
-            throw new RuntimeException();
-        });
-        return findActorById;
+        try {
+            List<ActorDto> findActorById = new ArrayList<>();
+            String actorIds = String.valueOf(actorId);
+            if (actorIds.length() > 2) {
+                throw new ActorIdNotValid();
+            }
+                actorRepository.findById(actorId).ifPresentOrElse(a -> {
+                    findActorById.add(getActorById(a));
+                }, () -> {
+                    throw new RuntimeException();
+                });
+
+                return findActorById;
+
+        } catch (RuntimeException e) {
+            throw new ActorIdNotValid();
+        }
+
     }
 public ActorDto getActorById(Actor actor){
 return ActorDto.builder()
