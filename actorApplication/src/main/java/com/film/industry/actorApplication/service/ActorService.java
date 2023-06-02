@@ -32,6 +32,7 @@ public class ActorService {
             List<ActorDto> findActorById = new ArrayList<>();
             String actorIds = String.valueOf(actorId);
             if (actorIds.length() > 2) {
+                logger.info("actor id is greater then 2 digits :" +actorId);
                 throw new ActorIdNotValid();
             }
                 actorRepository.findById(actorId).ifPresentOrElse(a -> {
